@@ -1,0 +1,75 @@
+{
+  "title": "NWS Weather Signal",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up NWS Weather Signal",
+        "description": "Choose how alerts are located and how many alert slots to create.",
+        "data": {
+          "name": "Name",
+          "location_type": "Location method",
+          "alert_limit": "Alert slots"
+        }
+      },
+      "point": {
+        "title": "Coordinates",
+        "description": "Enter the point that should receive active alerts.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        }
+      },
+      "zone": {
+        "title": "NWS zone or county",
+        "description": "Enter a six-character forecast zone or county code, such as INZ009 or INC033.",
+        "data": {
+          "zone": "Zone or county code"
+        }
+      },
+      "area": {
+        "title": "State or marine area",
+        "description": "Enter a two-letter state or marine area code.",
+        "data": {
+          "area": "Area code"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to retrieve alerts from weather.gov."
+    },
+    "abort": {
+      "already_configured": "This alert location is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "NWS Weather Signal options",
+        "description": "Changing the number of slots reloads the integration.",
+        "data": {
+          "alert_limit": "Alert slots"
+        }
+      }
+    }
+  },
+  "selector": {
+    "location_type": {
+      "options": {
+        "point": "Coordinates",
+        "zone": "NWS zone or county",
+        "area": "State or marine area"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "alert_slot": {
+        "name": "Alert {number}",
+        "state": {
+          "on": "Active",
+          "off": "Inactive"
+        }
+      }
+    }
+  }
+}

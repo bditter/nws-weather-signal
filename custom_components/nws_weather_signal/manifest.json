@@ -1,0 +1,14 @@
+{
+  "domain": "nws_weather_signal",
+  "name": "NWS Weather Signal",
+  "codeowners": [
+    "@bditter"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/bditter/nws-weather-signal",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/bditter/nws-weather-signal/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

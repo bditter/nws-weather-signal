@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import NwsApiClient
-from .const import PLATFORMS
+from .const import PLATFORMS, VERSION
 from .coordinator import NwsWeatherSignalCoordinator
 
 type NwsWeatherSignalConfigEntry = ConfigEntry[NwsWeatherSignalCoordinator]
@@ -23,7 +23,7 @@ async def async_setup_entry(
     client = NwsApiClient(
         async_get_clientsession(hass),
         config,
-        f"NWS Weather Signal/0.1.0 Home Assistant/{HA_VERSION} "
+        f"NWS Weather Signal/{VERSION} Home Assistant/{HA_VERSION} "
         "(github.com/bditter/nws-weather-signal)",
     )
     coordinator = NwsWeatherSignalCoordinator(hass, entry, client)

@@ -4,6 +4,7 @@ from datetime import timedelta
 
 DOMAIN = "nws_weather_signal"
 PLATFORMS = ["binary_sensor"]
+VERSION = "1.0.0"
 
 CONF_AREA = "area"
 CONF_ALERT_LIMIT = "alert_limit"

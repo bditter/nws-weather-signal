@@ -1,6 +1,14 @@
 # NWS Weather Signal
 
 <p align="center">
+  <a href="https://github.com/bditter/nws-weather-signal/releases/latest"><img src="https://img.shields.io/github/v/release/bditter/nws-weather-signal?style=for-the-badge" alt="Latest release"></a>
+  <a href="https://github.com/bditter/nws-weather-signal/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/bditter/nws-weather-signal/validate.yml?branch=main&style=for-the-badge&label=tests" alt="Tests"></a>
+  <a href="https://github.com/bditter/nws-weather-signal/actions/workflows/hassfest.yml"><img src="https://img.shields.io/github/actions/workflow/status/bditter/nws-weather-signal/hassfest.yml?branch=main&style=for-the-badge&label=HA%20validation" alt="Home Assistant validation"></a>
+  <a href="https://hacs.xyz/"><img src="https://img.shields.io/badge/HACS-custom-41BDF5?style=for-the-badge" alt="HACS custom repository"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/bditter/nws-weather-signal?style=for-the-badge" alt="MIT License"></a>
+</p>
+
+<p align="center">
   <img src="artwork/icon@2x.png" alt="NWS Weather Signal artwork" width="256">
 </p>
 

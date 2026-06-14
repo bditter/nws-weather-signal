@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="artwork/icon@2x.png" alt="NWS Weather Signal artwork" width="256">
+  <img src="custom_components/nws_weather_signal/brand/icon.png" alt="NWS Weather Signal artwork" width="256">
 </p>
 
 NWS Weather Signal is a Home Assistant custom integration that turns active

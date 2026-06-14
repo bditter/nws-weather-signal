@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -10,9 +11,16 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from homeassistant.util import dt as dt_util
 
 from .api import NwsApiClient, NwsApiError
-from .const import CONF_ALERT_LIMIT, DEFAULT_ALERT_LIMIT, DOMAIN, UPDATE_INTERVAL
+from .const import (
+    CONF_ALERT_LIMIT,
+    DEFAULT_ALERT_LIMIT,
+    DOMAIN,
+    UPDATE_INTERVAL,
+    normalize_alert_limit,
+)
 from .models import NwsAlert, parse_alerts
 
 LOGGER = logging.getLogger(__name__)
@@ -37,9 +45,12 @@ class NwsWeatherSignalCoordinator(DataUpdateCoordinator[tuple[NwsAlert, ...]]):
             always_update=False,
         )
         self._client = client
-        self._alert_limit = entry.options.get(
-            CONF_ALERT_LIMIT,
-            entry.data.get(CONF_ALERT_LIMIT, DEFAULT_ALERT_LIMIT),
+        self.last_successful_update: datetime | None = None
+        self._alert_limit = normalize_alert_limit(
+            entry.options.get(
+                CONF_ALERT_LIMIT,
+                entry.data.get(CONF_ALERT_LIMIT, DEFAULT_ALERT_LIMIT),
+            )
         )
 
     async def _async_update_data(self) -> tuple[NwsAlert, ...]:
@@ -48,4 +59,11 @@ class NwsWeatherSignalCoordinator(DataUpdateCoordinator[tuple[NwsAlert, ...]]):
             payload = await self._client.async_get_active_alerts()
         except NwsApiError as err:
             raise UpdateFailed(str(err)) from err
-        return parse_alerts(payload, self._alert_limit)
+        alerts = parse_alerts(payload, self._alert_limit)
+        self.last_successful_update = dt_util.utcnow()
+        return alerts
+
+    @property
+    def request_url(self) -> str:
+        """Return the weather.gov request URL."""
+        return self._client.url

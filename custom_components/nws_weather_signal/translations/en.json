@@ -45,11 +45,38 @@
     "step": {
       "init": {
         "title": "NWS Weather Signal options",
-        "description": "Changing the number of slots reloads the integration.",
+        "description": "Change the alert slots or select a different location method. The integration reloads after saving.",
         "data": {
-          "alert_limit": "Alert slots"
+          "alert_limit": "Alert slots",
+          "location_type": "Location method"
+        }
+      },
+      "point": {
+        "title": "Change coordinates",
+        "description": "Enter the point that should receive active alerts.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude"
+        }
+      },
+      "zone": {
+        "title": "Change NWS zone or county",
+        "description": "Enter a six-character forecast zone or county code, such as INZ009 or INC033.",
+        "data": {
+          "zone": "Zone or county code"
+        }
+      },
+      "area": {
+        "title": "Change state or marine area",
+        "description": "Enter a two-letter state or marine area code.",
+        "data": {
+          "area": "Area code"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Unable to retrieve alerts from weather.gov.",
+      "invalid_location": "The location information is invalid. Check the coordinates or code."
     }
   },
   "selector": {
@@ -63,12 +90,24 @@
   },
   "entity": {
     "binary_sensor": {
+      "active_weather_alerts": {
+        "name": "Active Weather Alerts",
+        "state": {
+          "on": "Active",
+          "off": "Inactive"
+        }
+      },
       "alert_slot": {
         "name": "Alert {number}",
         "state": {
           "on": "Active",
           "off": "Inactive"
         }
+      }
+    },
+    "sensor": {
+      "active_weather_alerts_list": {
+        "name": "Active Weather Alerts List"
       }
     }
   }

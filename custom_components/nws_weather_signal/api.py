@@ -5,19 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
-from yarl import URL
 
-from .const import (
-    API_BASE_URL,
-    CONF_AREA,
-    CONF_LATITUDE,
-    CONF_LOCATION_TYPE,
-    CONF_LONGITUDE,
-    CONF_ZONE,
-    LOCATION_AREA,
-    LOCATION_POINT,
-    LOCATION_ZONE,
-)
+from .location import build_alerts_url
 
 
 class NwsApiError(Exception):
@@ -30,22 +19,6 @@ class NwsApiConnectionError(NwsApiError):
 
 class NwsApiResponseError(NwsApiError):
     """Raised when weather.gov rejects a request."""
-
-
-def build_alerts_url(config: dict[str, Any]) -> URL:
-    """Build the active-alert URL for a configured location."""
-    location_type = config[CONF_LOCATION_TYPE]
-    url = URL(f"{API_BASE_URL}/alerts/active")
-
-    if location_type == LOCATION_POINT:
-        point = f"{config[CONF_LATITUDE]:.4f},{config[CONF_LONGITUDE]:.4f}"
-        return url.with_query(point=point)
-    if location_type == LOCATION_ZONE:
-        return url.with_query(zone=str(config[CONF_ZONE]).upper())
-    if location_type == LOCATION_AREA:
-        return url.with_query(area=str(config[CONF_AREA]).upper())
-    raise ValueError(f"Unsupported location type: {location_type}")
-
 
 class NwsApiClient:
     """Small async client for active NWS alerts."""
@@ -63,6 +36,11 @@ class NwsApiClient:
             "Accept": "application/geo+json",
             "User-Agent": user_agent,
         }
+
+    @property
+    def url(self) -> str:
+        """Return the configured alerts request URL."""
+        return str(self._url)
 
     async def async_get_active_alerts(self) -> dict[str, Any]:
         """Fetch active alerts."""

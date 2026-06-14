@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
+from .const import normalize_alert_limit
+
 _SEVERITY_RANK = {
     "Extreme": 0,
     "Severe": 1,
@@ -28,6 +30,31 @@ _CERTAINTY_RANK = {
     "Unknown": 4,
 }
 
+EMPTY_ALERT_ATTRIBUTES: dict[str, Any] = {
+    "title": "None",
+    "event": "None",
+    "nws_code": "None",
+    "same_code": "None",
+    "description": "None",
+    "instruction": "None",
+    "severity": "None",
+    "urgency": "None",
+    "certainty": "None",
+    "status": "None",
+    "message_type": "None",
+    "recommended_response": "None",
+    "area_description": "None",
+    "sent": "None",
+    "effective": "None",
+    "onset": "None",
+    "expires": "None",
+    "ends": "None",
+    "sender": "None",
+    "affected_zones": "None",
+    "alert_id": "None",
+    "source_url": "None",
+}
+
 
 def _as_strings(value: Any) -> tuple[str, ...]:
     """Normalize a CAP value to a tuple of strings."""
@@ -44,6 +71,11 @@ def _event_codes(properties: dict[str, Any], key: str) -> tuple[str, ...]:
     if not isinstance(event_code, dict):
         return ()
     return _as_strings(event_code.get(key))
+
+
+def _value_or_none(value: Any) -> Any:
+    """Return a visible scalar placeholder for missing values."""
+    return value if value not in (None, "") else "None"
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,24 +160,28 @@ class NwsAlert:
         return {
             "title": self.headline,
             "event": self.event,
-            "nws_code": list(self.nws_codes),
-            "same_code": list(self.same_codes),
-            "description": self.description,
-            "instruction": self.instruction,
+            "nws_code": self.nws_codes[0] if self.nws_codes else "None",
+            "same_code": self.same_codes[0] if self.same_codes else "None",
+            "description": _value_or_none(self.description),
+            "instruction": _value_or_none(self.instruction),
             "severity": self.severity,
             "urgency": self.urgency,
             "certainty": self.certainty,
             "status": self.status,
             "message_type": self.message_type,
-            "recommended_response": self.response,
-            "area_description": self.area_description,
-            "sent": self.sent,
-            "effective": self.effective,
-            "onset": self.onset,
-            "expires": self.expires,
-            "ends": self.ends,
-            "sender": self.sender_name,
-            "affected_zones": list(self.affected_zones),
+            "recommended_response": _value_or_none(self.response),
+            "area_description": _value_or_none(self.area_description),
+            "sent": _value_or_none(self.sent),
+            "effective": _value_or_none(self.effective),
+            "onset": _value_or_none(self.onset),
+            "expires": _value_or_none(self.expires),
+            "ends": _value_or_none(self.ends),
+            "sender": _value_or_none(self.sender_name),
+            "affected_zones": (
+                ", ".join(self.affected_zones)
+                if self.affected_zones
+                else "None"
+            ),
             "alert_id": self.alert_id,
             "source_url": self.source_url,
         }
@@ -153,6 +189,7 @@ class NwsAlert:
 
 def parse_alerts(payload: dict[str, Any], limit: int) -> tuple[NwsAlert, ...]:
     """Normalize, de-duplicate, prioritize, and limit an API response."""
+    limit = normalize_alert_limit(limit)
     alerts: dict[str, NwsAlert] = {}
     for feature in payload.get("features") or []:
         if not isinstance(feature, dict):
@@ -161,3 +198,25 @@ def parse_alerts(payload: dict[str, Any], limit: int) -> tuple[NwsAlert, ...]:
         if alert.alert_id:
             alerts[alert.alert_id] = alert
     return tuple(sorted(alerts.values(), key=lambda alert: alert.sort_key)[:limit])
+
+
+def empty_alert_attributes() -> dict[str, Any]:
+    """Return a fresh placeholder attribute mapping for an empty slot."""
+    return EMPTY_ALERT_ATTRIBUTES.copy()
+
+
+def active_alert_list_attributes(alerts: tuple[NwsAlert, ...]) -> dict[str, str]:
+    """Return scalar aggregate attributes for all active alerts."""
+    if not alerts:
+        return {
+            "alert_code": "None",
+            "alert_severity": "None",
+            "alert_message": "None",
+        }
+    return {
+        "alert_code": ", ".join(alert.attributes["nws_code"] for alert in alerts),
+        "alert_severity": ", ".join(alert.severity for alert in alerts),
+        "alert_message": "\n\n".join(
+            alert.attributes["description"] for alert in alerts
+        ),
+    }

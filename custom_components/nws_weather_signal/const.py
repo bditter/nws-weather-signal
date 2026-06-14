@@ -1,9 +1,10 @@
 """Constants for NWS Weather Signal."""
 
 from datetime import timedelta
+from typing import Any
 
 DOMAIN = "nws_weather_signal"
-PLATFORMS = ["binary_sensor"]
+PLATFORMS = ["binary_sensor", "sensor"]
 VERSION = "1.0.0"
 
 CONF_AREA = "area"
@@ -24,3 +25,12 @@ UPDATE_INTERVAL = timedelta(minutes=1)
 
 API_BASE_URL = "https://api.weather.gov"
 ATTRIBUTION = "Data provided by the U.S. National Weather Service"
+
+
+def normalize_alert_limit(value: Any) -> int:
+    """Return a valid integer alert-slot count."""
+    try:
+        limit = int(value)
+    except (TypeError, ValueError):
+        return DEFAULT_ALERT_LIMIT
+    return max(MIN_ALERT_LIMIT, min(limit, MAX_ALERT_LIMIT))

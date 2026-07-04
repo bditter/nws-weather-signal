@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 - 2026-07-04
+
+- Set the Active Weather Alerts binary sensor icon to
+  `mdi:weather-lightning-rainy`.
+
 ## 1.0.1 - 2026-07-04
 
 - Add summary active-alert and active-alert-list entities.

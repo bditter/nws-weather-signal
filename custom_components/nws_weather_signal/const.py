@@ -5,7 +5,7 @@ from typing import Any
 
 DOMAIN = "nws_weather_signal"
 PLATFORMS = ["binary_sensor", "sensor"]
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 CONF_AREA = "area"
 CONF_ALERT_LIMIT = "alert_limit"

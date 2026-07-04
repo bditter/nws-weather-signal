@@ -53,7 +53,7 @@ class NwsActiveWeatherAlertsBinarySensor(
 
     _attr_attribution = ATTRIBUTION
     _attr_has_entity_name = True
-    _attr_icon = "mdi:weather-alert"
+    _attr_icon = "mdi:weather-lightning-rainy"
     _attr_translation_key = "active_weather_alerts"
 
     def __init__(

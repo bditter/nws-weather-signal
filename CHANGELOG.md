@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 - 2026-07-04
+
+- Add summary active-alert and active-alert-list entities.
+
 ## 1.0.0 - 2026-06-14
 
 - Initial public release.
@@ -18,4 +22,3 @@
 - Expose NWS/SAME codes and detailed CAP alert attributes.
 - Add UI configuration and editable alert-slot options.
 - Add original project artwork and HACS brand assets.
-- Add summary active-alert and active-alert-list entities.
